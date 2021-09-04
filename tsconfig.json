@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "module": "commonjs", // solve "import" syntax in index.js
+        "esModuleInterop": true, // solve no default exported modules like express
+        "outDir": "dist",
+        "target": "es6",
+        "strict": true
+    },
+    "include": [
+        "src/**/*"
+    ]
+}
