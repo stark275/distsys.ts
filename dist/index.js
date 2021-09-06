@@ -4,6 +4,5 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Server_1 = __importDefault(require("./server/Server"));
-//NodeManager.pingLoop(3000);
-const server = new Server_1.default(8001);
+const server = Server_1.default.getInstance(8001);
 server.start();

@@ -1,16 +1,18 @@
 import Node from "./Node";
-import * as http from "http"
-import EventEmitter from 'events'
+import * as http from "http";
+import EventEmitter from 'events';
 import { setInterval } from "timers";
-
+import { IncomingMessage } from "http";
 
 export default class NodeManager {
 
-    private static index: number = 0;
+    private  index: number = 0;
     
-    private static eventEmitter: EventEmitter = new EventEmitter();
+    private static eventEmitter: EventEmitter;
 
-    private static nodes : Node[] = [
+    private  _eventEmitter: EventEmitter;
+
+    private  nodes : Node[] = [
         Node.factory(
             {
                 protocol :"http:",
@@ -32,45 +34,62 @@ export default class NodeManager {
             },
             'server',
             'unknown'
+        ),
+        Node.factory(
+            {
+                protocol :"http:",
+                host: "localhost",
+                port: 5005,
+                path: "/n3",
+                method: "GET"
+            },
+            'server',
+            'unknown'
         )
     ];
 
-    constructor(){
+   // private static aliveNodes: string[] = []
+
+    constructor(eventEmitter: EventEmitter){
+
+        this._eventEmitter = eventEmitter;
+        NodeManager.eventEmitter = this._eventEmitter;
+
         NodeManager.eventEmitter.on('alive', () => {
-           NodeManager.changeNodeState(NodeManager.index, 'alive')
+           this.changeNodeState(this.index, 'alive')
         });
 
         NodeManager.eventEmitter.on('down', () => {
-           NodeManager.changeNodeState(NodeManager.index, 'down')
+           this.changeNodeState(this.index, 'down')
 
         });
     }
 
-    static factory (): NodeManager{
-        return new NodeManager();
+    static factory (eventEmitter: EventEmitter): NodeManager{
+        return new NodeManager(eventEmitter);
     }
 
-    static changeNodeState(index: number, state: string): void{
+    private changeNodeState(index: number, state: string): void{
         this.nodes[index].state = state;
     }
 
-    static pingNode(index: number):void{             
+    private pingNode(index: number):void{             
         let req = http.request(
             this.nodes[index].getNodeOptions(),
             this.requestCallback            
         );
         req.on("error", () => {
-            NodeManager.eventEmitter.emit('down');
-
+            NodeManager.eventEmitter.emit('down');            
         });
         
         console.log();    
         console.log("---------------------endPing-------------------");
-        console.log();    
+        console.log();   
+
         req.end();
     }
 
-    private static requestCallback(res: http.IncomingMessage){
+    private  requestCallback(res: IncomingMessage){
         var str = ''
         res.on('data', function (chunk) {
             str += chunk
@@ -80,21 +99,20 @@ export default class NodeManager {
         })
     }
 
-    static pingLoop(interval:number): void{
-        this.factory()
+    pingLoop(interval:number): void{
         setInterval(() => {
             this.pingNode(this.index);
-            console.log(this.getAliveNodesUrl()); 
             if (this.index == this.nodes.length-1) 
                 this.index = 0;
             else
                 this.index++;
-        }, interval);
-        console.log("Node ping Loop began...:");
-        
+
+            this.getAliveNodesUrl(); 
+        }, interval); 
+        console.log("Node ping Loop began...:");      
     }
 
-    static getAliveNodesUrl(): Array<string>{
+    private getAliveNodesUrl(): Array<string>{
         let aliveNodes : string[] = [];      
         for (let id = 0; id < this.nodes.length; id++) {
             if (this.nodes[id].state == "alive") {
@@ -102,6 +120,9 @@ export default class NodeManager {
                 aliveNodes.push(noreUrl)
             }
         }
+
+        NodeManager.eventEmitter.emit("Alive-nodes-Updated",aliveNodes);
+
         return aliveNodes
     }
 }
