@@ -28,7 +28,7 @@ class Server {
         const app = (0, express_1.default)();
         NodeManager_1.default.factory(this.eventEmitter).pingLoop(3000);
         this.eventEmitter.on('Alive-nodes-Updated', (aliveNodes) => {
-            console.log(aliveNodes);
+            // console.log(aliveNodes);
         });
         app.get('/', function (req, res) {
             res.send('Im the Best');

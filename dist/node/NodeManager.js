@@ -26,29 +26,28 @@ const Node_1 = __importDefault(require("./Node"));
 const http = __importStar(require("http"));
 const timers_1 = require("timers");
 class NodeManager {
-    // private static aliveNodes: string[] = []
     constructor(eventEmitter) {
         this.index = 0;
         this.nodes = [
             Node_1.default.factory({
                 protocol: "http:",
                 host: "localhost",
-                port: 5000,
+                port: 4000,
                 path: "/",
                 method: "GET"
             }, 'server', 'unknown'),
             Node_1.default.factory({
                 protocol: "http:",
                 host: "localhost",
-                port: 5000,
-                path: "/n2",
+                port: 4001,
+                path: "/",
                 method: "GET"
             }, 'server', 'unknown'),
             Node_1.default.factory({
                 protocol: "http:",
                 host: "localhost",
-                port: 5005,
-                path: "/n3",
+                port: 4002,
+                path: "/",
                 method: "GET"
             }, 'server', 'unknown')
         ];
@@ -85,6 +84,7 @@ class NodeManager {
         res.on("end", () => {
             NodeManager.eventEmitter.emit("alive");
         });
+        console.log(str);
     }
     pingLoop(interval) {
         (0, timers_1.setInterval)(() => {
@@ -105,6 +105,7 @@ class NodeManager {
                 aliveNodes.push(noreUrl);
             }
         }
+        console.log(aliveNodes);
         NodeManager.eventEmitter.emit("Alive-nodes-Updated", aliveNodes);
         return aliveNodes;
     }

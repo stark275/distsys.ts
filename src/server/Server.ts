@@ -25,7 +25,7 @@ export default class Server {
        NodeManager.factory(this.eventEmitter).pingLoop(3000);
 
        this.eventEmitter.on('Alive-nodes-Updated', (aliveNodes)=>{
-           console.log(aliveNodes);
+          // console.log(aliveNodes);
        });
 
         app.get('/', function (req:Request, res: Response) {

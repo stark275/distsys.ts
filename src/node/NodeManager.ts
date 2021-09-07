@@ -17,7 +17,7 @@ export default class NodeManager {
             {
                 protocol :"http:",
                 host: "localhost",
-                port: 5000,
+                port: 4000,
                 path: "/",
                 method: "GET"
             },
@@ -28,8 +28,8 @@ export default class NodeManager {
             {
                 protocol :"http:",
                 host: "localhost",
-                port: 5000,
-                path: "/n2",
+                port: 4001,
+                path: "/",
                 method: "GET"
             },
             'server',
@@ -39,29 +39,26 @@ export default class NodeManager {
             {
                 protocol :"http:",
                 host: "localhost",
-                port: 5005,
-                path: "/n3",
+                port: 4002,
+                path: "/",
                 method: "GET"
             },
             'server',
             'unknown'
         )
     ];
-
-   // private static aliveNodes: string[] = []
-
+ 
     constructor(eventEmitter: EventEmitter){
 
         this._eventEmitter = eventEmitter;
         NodeManager.eventEmitter = this._eventEmitter;
 
         NodeManager.eventEmitter.on('alive', () => {
-           this.changeNodeState(this.index, 'alive')
+           this.changeNodeState(this.index, 'alive')       
         });
 
         NodeManager.eventEmitter.on('down', () => {
-           this.changeNodeState(this.index, 'down')
-
+            this.changeNodeState(this.index, 'down')
         });
     }
 
@@ -73,7 +70,7 @@ export default class NodeManager {
         this.nodes[index].state = state;
     }
 
-    private pingNode(index: number):void{             
+    private pingNode(index: number): void{  
         let req = http.request(
             this.nodes[index].getNodeOptions(),
             this.requestCallback            
@@ -97,6 +94,9 @@ export default class NodeManager {
         res.on("end", () => {
             NodeManager.eventEmitter.emit("alive");
         })
+
+        console.log(str);
+        
     }
 
     pingLoop(interval:number): void{
@@ -113,14 +113,16 @@ export default class NodeManager {
     }
 
     private getAliveNodesUrl(): Array<string>{
-        let aliveNodes : string[] = [];      
+        let aliveNodes : string[] = [];  
+
         for (let id = 0; id < this.nodes.length; id++) {
             if (this.nodes[id].state == "alive") {
                 let noreUrl: string = this.nodes[id].getNodeUrl()
-                aliveNodes.push(noreUrl)
+                aliveNodes.push(noreUrl);
             }
         }
 
+        console.log(aliveNodes);
         NodeManager.eventEmitter.emit("Alive-nodes-Updated",aliveNodes);
 
         return aliveNodes
