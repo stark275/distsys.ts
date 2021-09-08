@@ -121,8 +121,7 @@ export default class NodeManager {
                 aliveNodes.push(noreUrl);
             }
         }
-
-        console.log(aliveNodes);
+      //  console.log(aliveNodes);
         NodeManager.eventEmitter.emit("Alive-nodes-Updated",aliveNodes);
 
         return aliveNodes
