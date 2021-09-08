@@ -26,7 +26,7 @@ export default class RequestManagementPolicy {
         console.log(server);
 
         this.roundRobin();
-
+        //this.random();
 
         try{
 		// Requesting to underlying application server
@@ -48,6 +48,10 @@ export default class RequestManagementPolicy {
 
     private roundRobin():number{
         return this.current === (this.nodeUrls.length-1)? this.current = 0 : this.current++
+    }
+
+    private random():number{
+        return this.current = Math.floor(Math.random() * this.nodeUrls.length);
     }
 
     static factory():RequestManagementPolicy{
