@@ -31,45 +31,68 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ax = __importStar(require("axios"));
 class RequestManagementPolicy {
     constructor() {
+        /**
+         * Current node index
+        * @var {number}
+        */
         this.current = 0;
         this.nodeUrls = [];
         this.current = 0;
         this.axios = ax.default;
     }
+    /**
+    * Update alive node after ping
+    * @param    {Array<string>} nodeUrls
+    * @return   {void}
+    */
     updateNodeList(nodeUrls) {
         this.nodeUrls = nodeUrls;
     }
+    /**
+    * Handle an incoming request and foward it to the
+    * current node
+    * @param    {Request} req
+    * @param    {Response} res
+    * @return   {Promise<void>}
+    */
     requestHandler(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { method, url, headers, body } = req;
             const server = this.nodeUrls[this.current];
-            console.log(server);
+            console.log(this.nodeUrls[this.current]);
             this.roundRobin();
-            //this.random();
             try {
-                // Requesting to underlying application server
                 const response = yield this.axios({
                     url: `${server}${url}`,
                     method: method,
                     headers: headers,
                     data: body
                 });
-                // Send back the response data
-                // from application server to client
                 res.send(response.data);
             }
             catch (err) {
-                // Send back the error message
                 res.status(500).send("Server error!");
             }
         });
     }
+    /**
+   * Determine next node by round robin algoritm
+   * @return   {number}
+   */
     roundRobin() {
         return this.current === (this.nodeUrls.length - 1) ? this.current = 0 : this.current++;
     }
+    /**
+    * Determine next node by random algoritm
+    * @return   {number}
+    */
     random() {
         return this.current = Math.floor(Math.random() * this.nodeUrls.length);
     }
+    /**
+    * Create RequestManagementPolicy instance
+    * @return   {RequestManagementPolicy}
+    */
     static factory() {
         return new RequestManagementPolicy();
     }

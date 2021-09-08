@@ -27,26 +27,34 @@ const http = __importStar(require("http"));
 const timers_1 = require("timers");
 class NodeManager {
     constructor(eventEmitter) {
+        /**
+        * Index of current node
+        * @var    {number}
+        */
         this.index = 0;
+        /**
+        * List all pingable Nodes
+        * @var    {Node[]}
+        */
         this.nodes = [
             Node_1.default.factory({
                 protocol: "http:",
-                host: "localhost",
-                port: 4000,
+                host: "192.168.43.237",
+                port: 8003,
                 path: "/",
                 method: "GET"
             }, 'server', 'unknown'),
             Node_1.default.factory({
                 protocol: "http:",
-                host: "localhost",
-                port: 4001,
+                host: "192.168.43.237",
+                port: 8004,
                 path: "/",
                 method: "GET"
             }, 'server', 'unknown'),
             Node_1.default.factory({
                 protocol: "http:",
-                host: "localhost",
-                port: 4002,
+                host: "192.168.43.237",
+                port: 8005,
                 path: "/",
                 method: "GET"
             }, 'server', 'unknown')
@@ -60,12 +68,29 @@ class NodeManager {
             this.changeNodeState(this.index, 'down');
         });
     }
+    /**
+    * Create NodeManager Instance
+    * (Next update: create a singleton)
+    * @param    {EventEmitter} eventEmitter
+    * @return   {NodeManager}
+    */
     static factory(eventEmitter) {
         return new NodeManager(eventEmitter);
     }
+    /**
+    * Construct Server Object
+    * @param    {number} index
+    * @param    {string} state
+    * @return   {void}
+    */
     changeNodeState(index, state) {
         this.nodes[index].state = state;
     }
+    /**
+    * Ping a single node
+    * @param    {number} port
+    * @return   {void}
+    */
     pingNode(index) {
         let req = http.request(this.nodes[index].getNodeOptions(), this.requestCallback);
         req.on("error", () => {
@@ -76,6 +101,11 @@ class NodeManager {
         console.log();
         req.end();
     }
+    /**
+    * Request Callback
+    * @param    {IncomingMessage} res
+    * @return   {void}
+    */
     requestCallback(res) {
         var str = '';
         res.on('data', function (chunk) {
@@ -86,6 +116,11 @@ class NodeManager {
         });
         console.log(str);
     }
+    /**
+    * infinite ping loop
+    * @param    {number} interval
+    * @return   {void}
+    */
     pingLoop(interval) {
         (0, timers_1.setInterval)(() => {
             this.pingNode(this.index);
@@ -97,6 +132,10 @@ class NodeManager {
         }, interval);
         console.log("Node ping Loop began...:");
     }
+    /**
+    * Get url array of alive Nodes
+    * @return   {Array<string>}
+    */
     getAliveNodesUrl() {
         let aliveNodes = [];
         for (let id = 0; id < this.nodes.length; id++) {

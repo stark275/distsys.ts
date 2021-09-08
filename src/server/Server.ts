@@ -12,6 +12,11 @@ export default class Server {
     private aliveNodes: Array<string> = [];
     private requestManager: RequestManagementPolicy;
 
+    /**
+    * Construct Server Object
+    * @param    {number} port
+    * @return   {void}   
+    */
     constructor(port: number) {
         this.port = port;
         this.currentServer = 0;
@@ -19,10 +24,20 @@ export default class Server {
         this.requestManager = RequestManagementPolicy.factory();
     }
 
+    /**
+    * Create an instance of Server class
+    * @param    {number} port
+    * @return   {Server}   
+    */
     static getInstance(port: number): Server{
         return new Server(port);
     }
 
+    /**
+    * Start the server 
+    * @return   {void}   
+    * 
+    */
     start (): void{
        const app = express();
    
@@ -31,12 +46,7 @@ export default class Server {
        this.eventEmitter.on('Alive-nodes-Updated', (aliveNodes)=>{
           this.aliveNodes = aliveNodes
           this.requestManager.updateNodeList(this.aliveNodes);
-
        });
-
-        // app.get('/', function (req:Request, res: Response) {
-        //     res.send('Im the Best');
-        // });
 
         this.requestManager.updateNodeList(this.aliveNodes);
 
@@ -48,11 +58,5 @@ export default class Server {
             console.log('Server Started');
         });
     }
-
-    async requestHandler(req: Request, res: Response){
-        const { method, url, headers, body } = req;
-
-    }
-
 
 }

@@ -8,9 +8,15 @@ class EventManager {
     constructor() {
         this._eventEmitter = new events_1.default();
     }
+    /**
+    * @return   {EventManage}
+    */
     static factory() {
         return new EventManager();
     }
+    /**
+    * @return   {EventManage}
+    */
     get eventEmitter() {
         return this._eventEmitter;
     }
