@@ -3,6 +3,7 @@ import * as http from "http";
 import EventEmitter from 'events';
 import { setInterval } from "timers";
 import { IncomingMessage } from "http";
+import NodePark from "./NodePark";
 
 export default class NodeManager {
 
@@ -26,42 +27,45 @@ export default class NodeManager {
 
     /**
     * List all pingable Nodes
-    * @var    {Node[]}  
+    * 
     */
-    private  nodes : Node[] = [
-        Node.factory(
-            {
-                protocol :"http:",
-                host: "localhost",
-                port: 4000,
-                path: "/ping",
-                method: "GET"
-            },
-            'server',
-            'unknown'
-        ),
-       Node.factory(
-            {
-                protocol :"http:",
-                host: "localhost",
-                port: 4001,
-                path: "/",
-                method: "GET"
-            },
-            'server',
-            'unknown'
-        ),
-        Node.factory(
-            {
-                protocol :"http:",
-                host: "localhost",
-                port: 4002,
-                path: "/",
-                method: "GET"
-            },
-            'server',
-            'unknown'
-        ),
+
+     private nodesPark = new NodePark
+     private nodes = this.nodesPark.getAllNodes();
+    // private  nodes : Node[] = [
+    //     Node.factory(
+    //         {
+    //             protocol :"http:",
+    //             host: "localhost",
+    //             port: 4000,
+    //             path: "/ping",
+    //             method: "GET"
+    //         },
+    //         'server',
+    //         'unknown'
+    //     ),
+    //    Node.factory(
+    //         {
+    //             protocol :"http:",
+    //             host: "localhost",
+    //             port: 4001,
+    //             path: "/",
+    //             method: "GET"
+    //         },
+    //         'server',
+    //         'unknown'
+    //     ),
+    //     Node.factory(
+    //         {
+    //             protocol :"http:",
+    //             host: "localhost",
+    //             port: 4002,
+    //             path: "/",
+    //             method: "GET"
+    //         },
+    //         'server',
+    //         'unknown'
+    //     ),
         // Node.factory(
         //     {
         //         protocol :"http:",
@@ -95,7 +99,7 @@ export default class NodeManager {
         //     'server',
         //     'unknown'
         // )
-    ];
+    //];
     
     
     constructor(eventEmitter: EventEmitter){
