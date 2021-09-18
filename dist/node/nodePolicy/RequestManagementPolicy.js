@@ -60,8 +60,9 @@ class RequestManagementPolicy {
             const { method, url, headers, body } = req;
             const server = this.nodeUrls[this.current];
             console.log(this.nodeUrls[this.current]);
-            this.roundRobin();
+            this.random;
             try {
+                console.log(`${server}${url}`, this.current);
                 const response = yield this.axios({
                     url: `${server}${url}`,
                     method: method,
@@ -71,6 +72,7 @@ class RequestManagementPolicy {
                 res.send(response.data);
             }
             catch (err) {
+                this.random;
                 res.status(500).send("Server error!");
             }
         });

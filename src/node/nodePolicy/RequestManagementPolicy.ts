@@ -50,9 +50,11 @@ export default class RequestManagementPolicy {
 
         console.log(this.nodeUrls[this.current]);
 
-        this.roundRobin();
+        this.random;
 
         try{
+            console.log(`${server}${url}`, this.current);
+            
             const response = await this.axios({
                 url: `${server}${url}`,
                 method: method,
@@ -62,6 +64,7 @@ export default class RequestManagementPolicy {
             res.send(response.data)
         }
         catch(err){
+            this.random;
             res.status(500).send("Server error!")
         }
     }

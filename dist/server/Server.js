@@ -35,7 +35,7 @@ class Server {
     */
     start() {
         const app = (0, express_1.default)();
-        NodeManager_1.default.factory(this.eventEmitter).pingLoop(3000);
+        NodeManager_1.default.factory(this.eventEmitter).pingLoop(2000);
         this.eventEmitter.on('Alive-nodes-Updated', (aliveNodes) => {
             this.aliveNodes = aliveNodes;
             this.requestManager.updateNodeList(this.aliveNodes);

@@ -1,6 +1,6 @@
 import Server from "./server/Server";
 
-const server = Server.getInstance(8001);
+const server = Server.getInstance(8010);
 server.start();
 
 

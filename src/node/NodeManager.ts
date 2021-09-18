@@ -32,8 +32,19 @@ export default class NodeManager {
         Node.factory(
             {
                 protocol :"http:",
-                host: "192.168.43.237",
-                port: 8003,
+                host: "localhost",
+                port: 4000,
+                path: "/ping",
+                method: "GET"
+            },
+            'server',
+            'unknown'
+        ),
+       Node.factory(
+            {
+                protocol :"http:",
+                host: "localhost",
+                port: 4001,
                 path: "/",
                 method: "GET"
             },
@@ -43,25 +54,47 @@ export default class NodeManager {
         Node.factory(
             {
                 protocol :"http:",
-                host: "192.168.43.237",
-                port: 8004,
+                host: "localhost",
+                port: 4002,
                 path: "/",
                 method: "GET"
             },
             'server',
             'unknown'
         ),
-        Node.factory(
-            {
-                protocol :"http:",
-                host: "192.168.43.237",
-                port: 8005,
-                path: "/",
-                method: "GET"
-            },
-            'server',
-            'unknown'
-        )
+        // Node.factory(
+        //     {
+        //         protocol :"http:",
+        //         host: "192.168.43.237",
+        //         port: 8003,
+        //         path: "/ping",
+        //         method: "GET"
+        //     },
+        //     'server',
+        //     'unknown'
+        // ),
+        // Node.factory(
+        //     {
+        //         protocol :"http:",
+        //         host: "192.168.43.237",
+        //         port: 8004,
+        //         path: "/ping",
+        //         method: "GET"
+        //     },
+        //     'server',
+        //     'unknown'
+        // ),
+        // Node.factory(
+        //     {
+        //         protocol :"http:",
+        //         host: "192.168.43.237",
+        //         port: 8005,
+        //         path: "/ping",
+        //         method: "GET"
+        //     },
+        //     'server',
+        //     'unknown'
+        // )
     ];
     
     
@@ -71,11 +104,13 @@ export default class NodeManager {
         NodeManager.eventEmitter = this._eventEmitter;
 
         NodeManager.eventEmitter.on('alive', () => {
-           this.changeNodeState(this.index, 'alive')       
+            let index: number = this.getRealId(this.index);
+            this.changeNodeState(index, 'alive')       
         });
 
         NodeManager.eventEmitter.on('down', () => {
-            this.changeNodeState(this.index, 'down')
+            let index: number = this.getRealId(this.index);
+            this.changeNodeState(index, 'down');
         });
     }
 
@@ -112,10 +147,14 @@ export default class NodeManager {
         req.on("error", () => {
             NodeManager.eventEmitter.emit('down');            
         });
+
+        this.getAliveNodesUrl(); 
         
         console.log();    
         console.log("---------------------endPing-------------------");
-        console.log();   
+        console.log();  
+        
+        
 
         req.end();
     }
@@ -134,7 +173,6 @@ export default class NodeManager {
             NodeManager.eventEmitter.emit("alive");
         })
 
-        console.log(str);    
     }
 
     /**
@@ -150,7 +188,6 @@ export default class NodeManager {
             else
                 this.index++;
 
-            this.getAliveNodesUrl(); 
         }, interval); 
         console.log("Node ping Loop began...:");      
     }
@@ -164,13 +201,22 @@ export default class NodeManager {
 
         for (let id = 0; id < this.nodes.length; id++) {
             if (this.nodes[id].state == "alive") {
+               // id = this.getRealId(id);
                 let noreUrl: string = this.nodes[id].getNodeUrl()
                 aliveNodes.push(noreUrl);
             }
         }
-      //  console.log(aliveNodes);
+        console.log(aliveNodes);
         NodeManager.eventEmitter.emit("Alive-nodes-Updated",aliveNodes);
 
         return aliveNodes
+    }
+
+    private getRealId(id: number): number{
+        id -= 1;
+        if (id == -1) 
+            id = this.nodes.length - 1
+      
+        return id;
     }
 }
