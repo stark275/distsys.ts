@@ -57,12 +57,12 @@ class RequestManagementPolicy {
     */
     requestHandler(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            const server = this.nodeUrls[this.current]; // http://localhost:xxxx
+            req.headers.host = server.substring(7); // localhost:xxxx
             const { method, url, headers, body } = req;
-            const server = this.nodeUrls[this.current];
-            console.log(this.nodeUrls[this.current]);
-            this.random;
+            this.random(); // 0 or 1 or 2 or N
             try {
-                console.log(`${server}${url}`, this.current);
+                // console.log(`${server}${url}`, this.current); 
                 const response = yield this.axios({
                     url: `${server}${url}`,
                     method: method,
@@ -72,8 +72,7 @@ class RequestManagementPolicy {
                 res.send(response.data);
             }
             catch (err) {
-                this.random;
-                res.status(500).send("Server error!");
+                res.status(500).send("[500] Server error! " + err);
             }
         });
     }

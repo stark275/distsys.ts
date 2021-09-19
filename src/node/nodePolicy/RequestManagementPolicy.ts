@@ -44,28 +44,29 @@ export default class RequestManagementPolicy {
     * @return   {Promise<void>}   
     */
     async requestHandler(req: Request, res: Response): Promise<void>{
-      
+        
+        const server = this.nodeUrls[this.current]; // http://localhost:xxxx
+
+        req.headers.host = server.substring(7); // localhost:xxxx
+
         const { method, url, headers, body } = req;
-        const server = this.nodeUrls[this.current];
-
-        console.log(this.nodeUrls[this.current]);
-
-        this.random;
+       
+        this.random(); // 0 or 1 or 2 or N
 
         try{
-            console.log(`${server}${url}`, this.current);
+           // console.log(`${server}${url}`, this.current); 
             
             const response = await this.axios({
-                url: `${server}${url}`,
+                url: `${server}${url}`, //http://localhost:xxxx/login (for exemple)
                 method: method,
                 headers: headers,
                 data: body
             });
+
             res.send(response.data)
         }
         catch(err){
-            this.random;
-            res.status(500).send("Server error!")
+            res.status(500).send("[500] Server error! " + err);
         }
     }
     

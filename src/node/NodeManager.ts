@@ -216,7 +216,7 @@ export default class NodeManager {
         id -= 1;
         if (id == -1) 
             id = this.nodes.length - 1
-      
+    
         return id;
     }
 }
