@@ -29,83 +29,13 @@ export default class NodeManager {
     * List all pingable Nodes
     * 
     */
-
-     private nodesPark = new NodePark
-     private nodes = this.nodesPark.getAllNodes();
-    // private  nodes : Node[] = [
-    //     Node.factory(
-    //         {
-    //             protocol :"http:",
-    //             host: "localhost",
-    //             port: 4000,
-    //             path: "/ping",
-    //             method: "GET"
-    //         },
-    //         'server',
-    //         'unknown'
-    //     ),
-    //    Node.factory(
-    //         {
-    //             protocol :"http:",
-    //             host: "localhost",
-    //             port: 4001,
-    //             path: "/",
-    //             method: "GET"
-    //         },
-    //         'server',
-    //         'unknown'
-    //     ),
-    //     Node.factory(
-    //         {
-    //             protocol :"http:",
-    //             host: "localhost",
-    //             port: 4002,
-    //             path: "/",
-    //             method: "GET"
-    //         },
-    //         'server',
-    //         'unknown'
-    //     ),
-        // Node.factory(
-        //     {
-        //         protocol :"http:",
-        //         host: "192.168.43.237",
-        //         port: 8003,
-        //         path: "/ping",
-        //         method: "GET"
-        //     },
-        //     'server',
-        //     'unknown'
-        // ),
-        // Node.factory(
-        //     {
-        //         protocol :"http:",
-        //         host: "192.168.43.237",
-        //         port: 8004,
-        //         path: "/ping",
-        //         method: "GET"
-        //     },
-        //     'server',
-        //     'unknown'
-        // ),
-        // Node.factory(
-        //     {
-        //         protocol :"http:",
-        //         host: "192.168.43.237",
-        //         port: 8005,
-        //         path: "/ping",
-        //         method: "GET"
-        //     },
-        //     'server',
-        //     'unknown'
-        // )
-    //];
-    
+     private nodes: Node[] ;
     
     constructor(eventEmitter: EventEmitter){
 
         this._eventEmitter = eventEmitter;
         NodeManager.eventEmitter = this._eventEmitter;
+        this.nodes = NodePark.getAllNodes() 
 
         NodeManager.eventEmitter.on('alive', () => {
             let index: number = this.getRealId(this.index);
@@ -157,8 +87,6 @@ export default class NodeManager {
         console.log();    
         console.log("---------------------endPing-------------------");
         console.log();  
-        
-        
 
         req.end();
     }
@@ -176,7 +104,6 @@ export default class NodeManager {
         res.on("end", () => {
             NodeManager.eventEmitter.emit("alive");
         })
-
     }
 
     /**
@@ -219,8 +146,7 @@ export default class NodeManager {
     private getRealId(id: number): number{
         id -= 1;
         if (id == -1) 
-            id = this.nodes.length - 1
-    
+            id = this.nodes.length - 1   
         return id;
     }
 }

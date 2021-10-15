@@ -1,8 +1,8 @@
 import Node from "./Node";
 
-export default class NodePark {
+export default abstract class NodePark {
 
-    private nodes: Node[] = [
+    private static nodes: Node[] = [
         Node.factory(
             {
                 protocol: "http:",
@@ -37,44 +37,42 @@ export default class NodePark {
             'unknown'
         ),
         Node.factory(
-                    {
-                        protocol :"http:",
-                        host: "localhost",
-                        port: 4000,
-                        path: "/ping",
-                        method: "GET"
-                    },
-                    'server',
-                    'unknown'
-                ),
-               Node.factory(
-                    {
-                        protocol :"http:",
-                        host: "localhost",
-                        port: 4001,
-                        path: "/",
-                        method: "GET"
-                    },
-                    'server',
-                    'unknown'
-                ),
-                Node.factory(
-                    {
-                        protocol :"http:",
-                        host: "localhost",
-                        port: 4002,
-                        path: "/",
-                        method: "GET"
-                    },
-                    'server',
-                    'unknown'
-                ),
+            {
+                protocol :"http:",
+                host: "localhost",
+                port: 4000,
+                path: "/ping",
+                method: "GET"
+            },
+            'server',
+            'unknown'
+        ),
+        Node.factory(
+            {
+                protocol :"http:",
+                host: "localhost",
+                port: 4001,
+                path: "/",
+                method: "GET"
+            },
+            'server',
+            'unknown'
+        ),
+        Node.factory(
+            {
+                protocol :"http:",
+                host: "localhost",
+                port: 4002,
+                path: "/",
+                method: "GET"
+            },
+            'server',
+            'unknown'
+        ),
     ];
 
-    constructor() { }
-
-    getAllNodes() {
-        return [...this.nodes];
+   static getAllNodes() {
+        return [...NodePark.nodes];
     }
 
 }

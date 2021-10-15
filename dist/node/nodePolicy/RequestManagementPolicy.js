@@ -59,16 +59,18 @@ class RequestManagementPolicy {
         return __awaiter(this, void 0, void 0, function* () {
             const server = this.nodeUrls[this.current]; // http://localhost:xxxx
             req.headers.host = server.substring(7); // localhost:xxxx
+            req.headers['distsys-middleware'] = 'http://localhost:8010';
             const { method, url, headers, body } = req;
             this.random(); // 0 or 1 or 2 or N
             try {
-                // console.log(`${server}${url}`, this.current); 
+                console.log(`${server}${url}`, this.current);
                 const response = yield this.axios({
                     url: `${server}${url}`,
                     method: method,
                     headers: headers,
                     data: body
                 });
+                // res.setHeader("host","localhost:4000")
                 res.send(response.data);
             }
             catch (err) {

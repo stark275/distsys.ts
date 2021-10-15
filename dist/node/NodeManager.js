@@ -22,9 +22,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Node_1 = __importDefault(require("./Node"));
 const http = __importStar(require("http"));
 const timers_1 = require("timers");
+const NodePark_1 = __importDefault(require("./NodePark"));
 class NodeManager {
     constructor(eventEmitter) {
         /**
@@ -32,68 +32,9 @@ class NodeManager {
         * @var    {number}
         */
         this.index = 0;
-        /**
-        * List all pingable Nodes
-        * @var    {Node[]}
-        */
-        this.nodes = [
-            Node_1.default.factory({
-                protocol: "http:",
-                host: "localhost",
-                port: 4000,
-                path: "/ping",
-                method: "GET"
-            }, 'server', 'unknown'),
-            Node_1.default.factory({
-                protocol: "http:",
-                host: "localhost",
-                port: 4001,
-                path: "/",
-                method: "GET"
-            }, 'server', 'unknown'),
-            Node_1.default.factory({
-                protocol: "http:",
-                host: "localhost",
-                port: 4002,
-                path: "/",
-                method: "GET"
-            }, 'server', 'unknown'),
-            // Node.factory(
-            //     {
-            //         protocol :"http:",
-            //         host: "192.168.43.237",
-            //         port: 8003,
-            //         path: "/ping",
-            //         method: "GET"
-            //     },
-            //     'server',
-            //     'unknown'
-            // ),
-            // Node.factory(
-            //     {
-            //         protocol :"http:",
-            //         host: "192.168.43.237",
-            //         port: 8004,
-            //         path: "/ping",
-            //         method: "GET"
-            //     },
-            //     'server',
-            //     'unknown'
-            // ),
-            // Node.factory(
-            //     {
-            //         protocol :"http:",
-            //         host: "192.168.43.237",
-            //         port: 8005,
-            //         path: "/ping",
-            //         method: "GET"
-            //     },
-            //     'server',
-            //     'unknown'
-            // )
-        ];
         this._eventEmitter = eventEmitter;
         NodeManager.eventEmitter = this._eventEmitter;
+        this.nodes = NodePark_1.default.getAllNodes();
         NodeManager.eventEmitter.on('alive', () => {
             let index = this.getRealId(this.index);
             this.changeNodeState(index, 'alive');

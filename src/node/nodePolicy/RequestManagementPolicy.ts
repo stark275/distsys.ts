@@ -49,12 +49,13 @@ export default class RequestManagementPolicy {
 
         req.headers.host = server.substring(7); // localhost:xxxx
 
+        req.headers['distsys-middleware'] = 'http://localhost:8010';
         const { method, url, headers, body } = req;
        
         this.random(); // 0 or 1 or 2 or N
 
         try{
-           // console.log(`${server}${url}`, this.current); 
+            console.log(`${server}${url}`, this.current); 
             
             const response = await this.axios({
                 url: `${server}${url}`, //http://localhost:xxxx/login (for exemple)
@@ -63,6 +64,8 @@ export default class RequestManagementPolicy {
                 data: body
             });
 
+            
+           // res.setHeader("host","localhost:4000")
             res.send(response.data)
         }
         catch(err){
